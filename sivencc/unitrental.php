@@ -3,7 +3,6 @@
     require 'function.php';
     require 'cek.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
     <head>
@@ -20,14 +19,13 @@
         <!-- Nama Tab -->
         <title>Sistem Inventory Chef Camera</title>
         <!-- Impor File CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <!-- Impor File Javascript -->
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
         <!--Tautan ke Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         <!-- Tautan ke Cleave/Nominal Rupiah -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script> 
     </head>
     
     <body class="sb-nav-fixed">
@@ -81,7 +79,7 @@
                                 Unit Service
                             </a>
                             <div class="sb-sidenav-menu-heading">Download Laporan</div>
-                            <a class="nav-link" href="tables.html">
+                            <a class="nav-link" href="unduh.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Unduh
                             </a>
@@ -115,9 +113,10 @@
                             </div>
                             <!-- Body Tabel -->
                             <div class="card-body">
-                                <table id="datatablesSimple">
+                                <table id="tabelku" class="table">
                                     <thead>
                                         <tr>
+                                            <th>ID</th>
                                             <th>Jenis</th>
                                             <th>Nama Unit</th>
                                             <th>Status</th>
@@ -126,50 +125,43 @@
                                             <th>Keterangan</th>
                                             <th>Harga Sewa</th>
                                             <th>Tanggal Masuk</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                <?php
-                // Menghubungkan ke database (ganti dengan informasi koneksi yang sesuai)
-                $servername = "localhost";
-                $username = "root";
-                $password = "";
-                $dbname = "sivencc";
-                $conn = new mysqli($servername, $username, $password, $dbname);
+                                        <?php
+                                        // Query untuk mengambil data dari tabel stock
+                                        $sql = "SELECT id, jenisunit, namaunit, stts, merk, sn, ket, hargasewa, tanggalmasuk FROM stock WHERE stts = 'Rental' OR stts = 'Jual / Rental'";
+                                        $result = $conn->query($sql);
 
-                // Memeriksa koneksi
-                if ($conn->connect_error) {
-                    die("Koneksi gagal: " . $conn->connect_error);
-                }
+                                        // Menampilkan data
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<td>" . $row["id"] . "</td>";
+                                                echo "<td>" . $row["jenisunit"] . "</td>";
+                                                echo "<td>" . $row["namaunit"] . "</td>";
+                                                echo "<td>" . $row["stts"] . "</td>";
+                                                echo "<td>" . $row["merk"] . "</td>";
+                                                echo "<td>" . $row["sn"] . "</td>";
+                                                echo "<td>" . $row["ket"] . "</td>";
+                                                echo "<td>" . $row["hargasewa"] . "</td>";
+                                                echo "<td>" . $row["tanggalmasuk"] . "</td>";
+                                                echo "<td>
+                                                                        <a href='edit.php?id=" . $row["id"] . "'>Edit</a> |
+                                                                        <a href='delete.php?id=" . $row["id"] . "' onclick='return confirm(\"Apakah Anda yakin ingin menghapus data ini?\")'>Hapus</a>
+                                                                    </td>";
+                                                echo "</tr>";
+                                            }
+                                        } else {
+                                            echo "<tr><td colspan='8'>Tidak ada data yang ditemukan.</td></tr>";
+                                        }
 
-                // Query untuk mengambil data dari tabel stock
-                $sql = "SELECT namaunit, jenisunit, stts, merk, sn, ket, hargasewa, tanggalmasuk FROM stock";
-                $result = $conn->query($sql);
-
-                // Menampilkan data
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . $row["namaunit"] . "</td>";
-                        echo "<td>" . $row["jenisunit"] . "</td>";
-                        echo "<td>" . $row["stts"] . "</td>";
-                        echo "<td>" . $row["merk"] . "</td>";
-                        echo "<td>" . $row["sn"] . "</td>";
-                        echo "<td>" . $row["ket"] . "</td>";
-                        echo "<td>" . $row["hargasewa"] . "</td>";
-                        echo "<td>" . $row["tanggalmasuk"] . "</td>";
-                        echo "</tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='8'>Tidak ada data yang ditemukan.</td></tr>";
-                }
-
-                // Menutup koneksi
-                $conn->close();
-                ?>
-            </tbody>
+                                        ?>
+                                    </tbody>
                                     <tfoot>
                                         <tr>
+                                            <th>ID</th>
                                             <th>Jenis</th>
                                             <th>Nama Unit</th>
                                             <th>Status</th>
@@ -178,6 +170,7 @@
                                             <th>Keterangan</th>
                                             <th>Harga Sewa</th>
                                             <th>Tanggal Masuk</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -214,20 +207,20 @@
                                         <div class="form-group">
                                             <label for="merk">Status :</label>
                                             <select class="form-control" id="status" name="stts">
-                                                <option value="jualrental">Jual / Rental</option>
-                                                <option value="jual">Jual</option>
-                                                <option value="rental">Rental</option>
+                                                <option value="Jual / Rental">Jual / Rental</option>
+                                                <option value="Jual">Jual</option>
+                                                <option value="Rental">Rental</option>
                                             </select>                                        
                                         </div>
                                         <div class="form-group">
                                             <label for="merk">Merk :</label>
                                             <select class="form-control" id="merk" name="merk">
-                                                <option value="sony">Sony</option>
-                                                <option value="canon">Canon</option>
-                                                <option value="nikon">Nikon</option>
-                                                <option value="fujifilm">Fujifilm</option>
-                                                <option value="lumix">Lumix</option>
-                                                <option value="olympus">Olympus</option>
+                                                <option value="Sony">Sony</option>
+                                                <option value="Canon">Canon</option>
+                                                <option value="Nikon">Nikon</option>
+                                                <option value="Fujifilm">Fujifilm</option>
+                                                <option value="Lumix">Lumix</option>
+                                                <option value="Olympus">Olympus</option>
                                             </select>                                        
                                         </div>
                                         <div class="form-group">
@@ -254,7 +247,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                     <button type="submit" class="btn btn-primary" name="input">Simpan</button>
-</form>
+                                    </form>
                                 </div>
                         </div>
                         </div>

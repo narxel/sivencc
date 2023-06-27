@@ -2,7 +2,6 @@
 //IMPOR FILE
     require 'function.php';
     require 'cek.php';
-    require 'terbaca.php';
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +77,7 @@
                                 Unit Service
                             </a>
                             <div class="sb-sidenav-menu-heading">Download Laporan</div>
-                            <a class="nav-link" href="tables.html">
+                            <a class="nav-link" href="unduh.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Unduh
                             </a>

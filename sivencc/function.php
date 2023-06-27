@@ -22,10 +22,10 @@ if(isset($_POST['input'])){
 
     $addtotable = mysqli_query($conn, "insert into stock (namaunit, jenisunit, stts, merk, sn, ket, hargasewa, tanggalmasuk) VALUES ('$namaunit', '$jenisunit', '$stts', '$merk', '$sn', '$ket', '$hargasewa', '$tanggalmasuk')");
     if($addtotable){
-        header('location:index.php');
+        header('location:unitrental.php');
     } else {
         echo 'gagal';
-        header('location:index.php');
+        header('location:unitrental.php');
     }
 }
 ?>
